@@ -1,0 +1,70 @@
+mod_pubsub
+==========
+
+Author: Arjan Scherpenisse
+
+Module for Zotonic (http://zotonic.com/) which implements Resource
+Sharing over XMPP:
+
+  http://miraclethings.nl/page/644/resource-sharing-using-publish-subscribe
+
+This module, an Erlang gen_server, connects as a client to an XMPP
+server. It maintains this connection all the time as long as Zotonic
+is running. mod_pubsub implements both the publishing as well as the
+subscribing side of the resource sharing mechanism.
+
+Setting up PubSub
+-----------------
+
+Setting up mod_pubsub is quite easy: since it is implemented as an
+XMPP client, the only thing you need is a dedicated XMPP account at a
+server which is configured with pubsub support.
+
+Since the XMPP server needs publish/subscribe to be enabled, it's the
+easiest to run your own server. Servers known to work are ejabberd (at
+least version 2.0.1) and openfire. Make sure that you do enable pubsub
+support in the server, with support for instant node creation and with
+the access controls set so that anyone may create pubsub nodes. With
+ejabberd, this is the default setting.
+
+Configuration keys in Zotonic are the following:
+
+* mod_pubsub.jid: the jid of your dedicated account.
+
+* mod_pubsub.password: its password.
+
+* mod_pubsub.pubsub_domain: the pubsub domain: this is the JID of the
+  pubsub service: for instance, pubsub.yourserver.com.
+
+To add these config values, go to "config" in the admin, then click
+"make a new config setting", and then type "mod_pubsub" as the module,
+"jid" as the key, and your JID as the value; and click "add
+key". Repeat for the other config values. Now you're ready to enable
+the publish/subscribe module.  Please remember: Only activate the
+publish/subscribe module after setting the config keys!
+
+Once you've activated the module (click "activate" next to the
+"Publish/Subscribe" line in the Modules overview), you might not
+notice anything: pubsub should now "just work" :) If you see an error
+popup in the admin, there might be something wrong with your
+credentials (wrong JID or password).
+
+In the navigation bar at the left side of the screen you now see a
+"publish/subscribe" item. Clicking this brings you to the page where
+you see an overview of all the subscriptions this site has. The button
+at the top lets you subscribe to a page on another site. Try it! Of
+course, the site at the other end should support resource sharing as
+well: you can confirm this by viewing the source of a page at that
+site, verifying that the link rel=xmpp.feed meta tag is present. You
+can for instance try subscribing to the URL of this article.
+
+A word of warning
+-----------------
+
+A note: the resource sharing is still in development in Zotonic: the
+"happy path" works pretty good, but error reporting is still lacking:
+if something goes wrong while publishing or subscribing, you probably
+wouldn't notice it. It will fail silently without any notification in
+the Zotonic admin. If you suspect that this is happening: try starting
+Zotonic in debug mode to see all output. If you notice crashes when
+you save a page, you can at least inspect the output.
